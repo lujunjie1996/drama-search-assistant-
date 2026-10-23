@@ -22,7 +22,7 @@ jobs:
       - name: Build exe
         run: |
           cd drama_downloader_starter
-          pyinstaller -F -w -c --noconsole launcher/windows_launcher.py -n DramaSearchAssistant
+          pyinstaller -F launcher/windows_launcher.py -n DramaSearchAssistant
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
