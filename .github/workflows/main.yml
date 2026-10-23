@@ -1,39 +1,30 @@
 name: Build Windows EXE
-
 on:
-  workflow_dispatch:
   push:
-    paths:
-      - "drama_downloader_starter/**"
-      - ".github/workflows/build-windows.yml"
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: windows-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-
-      - name: Setup Python
-        uses: actions/setup-python@v6
+      - uses: actions/checkout@v4
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-
       - name: Install dependencies
-        working-directory: drama_downloader_starter
         run: |
+          cd drama_downloader_starter
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pyinstaller
-
-      - name: Build EXE
-        working-directory: drama_downloader_starter
+      - name: Build exe
         run: |
-          pyinstaller --noconfirm --clean --onefile --name DramaSearchAssistant launcher/windows_launcher.py
-
-      - name: Upload EXE
-        uses: actions/upload-artifact@v5
+          cd drama_downloader_starter
+          pyinstaller -F -w -c --noconsole launcher/windows_launcher.py -n DramaSearchAssistant
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
           name: DramaSearchAssistant-Windows
           path: drama_downloader_starter/dist/DramaSearchAssistant.exe
-          
