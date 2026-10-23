@@ -1,13 +1,18 @@
 import os
 import sys
+
+base_path = os.path.dirname(os.path.abspath(__file__))
+# 往上一层到 drama_downloader_starter，然后把app目录加入搜索路径
+proj_root = os.path.abspath(os.path.join(base_path, ".."))
+sys.path.insert(0, proj_root)
+
+# 正确导入：app包里面的main，app对象
+from app.main import app
 import uvicorn
 
 def main():
-    base_path = os.path.dirname(os.path.abspath(__file__))
-    # 主程序入口：假设你的api服务入口文件是 main.py，在 drama_downloader_starter 根目录
-    # 如果你的服务入口文件名不是 main.py，后面告诉我，我再改这一行
-    sys.path.insert(0, base_path)
-    uvicorn.run("main:app", host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8000)
 
 if __name__ == "__main__":
     main()
+    
