@@ -1,0 +1,34 @@
+{
+  "notice": "These are official platform/developer entry points, not direct video file URLs.",
+  "platforms": [
+    {
+      "id": "bilibili",
+      "name": "哔哩哔哩",
+      "site_url": "https://www.bilibili.com/",
+      "developer_url": "https://open.bilibili.com/doc",
+      "status": "needs_authorized_media_source"
+    },
+    {
+      "id": "douyin",
+      "name": "抖音",
+      "site_url": "https://www.douyin.com/",
+      "developer_url": "https://developer.open-douyin.com/",
+      "status": "needs_authorized_media_source"
+    },
+    {
+      "id": "hongguo",
+      "name": "红果短剧",
+      "site_url": "https://www.hongguoduanju.com/",
+      "developer_url": null,
+      "status": "needs_partner_or_rightsholder_contact"
+    },
+    {
+      "id": "authorized-catalog",
+      "name": "自有/授权素材库",
+      "site_url": null,
+      "developer_url": null,
+      "status": "ready",
+      "instructions": "Import authorized HTTPS video URLs; add their hostnames to ALLOWED_DOWNLOAD_HOSTS."
+    }
+  ]
+}

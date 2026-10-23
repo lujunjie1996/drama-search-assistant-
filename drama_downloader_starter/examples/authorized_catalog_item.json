@@ -1,0 +1,22 @@
+{
+  "title": "示例授权短剧",
+  "provider": "licensed-cdn",
+  "keywords": [
+    "都市",
+    "逆袭",
+    "示例"
+  ],
+  "rights_note": "仅作结构演示；请替换为真实的版权方授权说明和授权直链。",
+  "episodes": [
+    {
+      "episode_number": 1,
+      "title": "第1集",
+      "download_url": "https://media.example.com/series/ep001.mp4"
+    },
+    {
+      "episode_number": 2,
+      "title": "第2集",
+      "download_url": "https://media.example.com/series/ep002.mp4"
+    }
+  ]
+}

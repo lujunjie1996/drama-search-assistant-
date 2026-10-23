@@ -1,0 +1,5 @@
+重要：此压缩包仍是源码工程，不是已经编译好的 EXE。
+
+如果双击 START-LOCAL-SOURCE.bat，窗口会保持打开，并生成“启动诊断日志.txt”。
+如果未安装 Python，这个源码启动脚本无法运行。
+要生成免 Python 的 Windows 程序，需要在 Windows 电脑上运行 BUILD-WINDOWS-EXE.bat 并成功完成构建，或通过仓库的 Windows 构建工作流生成 EXE。

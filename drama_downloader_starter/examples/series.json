@@ -1,0 +1,8 @@
+{
+  "title": "授权素材示例",
+  "provider": "authorized-json",
+  "episodes": [
+    {"episode_number": 1, "title": "第1集", "download_url": "https://your-authorized-cdn.example/ep001.mp4"},
+    {"episode_number": 2, "title": "第2集", "download_url": "https://your-authorized-cdn.example/ep002.mp4"}
+  ]
+}

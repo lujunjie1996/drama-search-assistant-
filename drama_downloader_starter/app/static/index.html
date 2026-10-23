@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>短剧搜索助手</title>
+<style>
+:root{color-scheme:dark;--bg:#0b0b0d;--panel:#151518;--line:#303036;--gold:#d7b46a;--muted:#a5a5ad}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#f6f6f7;font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{padding:24px 20px;border-bottom:1px solid var(--line);background:linear-gradient(120deg,#191714,#0b0b0d)}
+.wrap{max-width:980px;margin:auto;padding:20px}h1{font-size:24px;margin:0 0 4px}h2{font-size:17px;margin:0 0 12px}p{margin:5px 0;color:var(--muted)}.gold{color:var(--gold)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px}
+.row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1;min-width:160px}
+input,textarea,select,button{font:inherit;border-radius:9px;border:1px solid #414149;background:#0f0f12;color:#fff;padding:11px;width:100%}
+textarea{min-height:150px;font-family:ui-monospace,monospace;font-size:13px}
+button{background:var(--gold);border-color:var(--gold);color:#17130b;font-weight:700;cursor:pointer}button.secondary{background:#242429;border-color:#45454d;color:#fff}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.actions button{width:auto}
+.status{padding:10px;border-radius:9px;background:#202024;margin-top:10px;white-space:pre-wrap;overflow-wrap:anywhere}
+.list{display:grid;gap:10px}.item{border:1px solid var(--line);border-radius:10px;padding:13px}.item strong{display:block}.meta{font-size:13px;color:var(--muted)}a{color:var(--gold)}
+small{color:var(--muted)}.pill{display:inline-block;border:1px solid #51462d;border-radius:99px;padding:2px 8px;color:var(--gold);font-size:12px}
+@media(max-width:600px){.wrap{padding:13px}.panel{padding:14px}h1{font-size:21px}}
+</style>
+</head>
+<body>
+<header><div class="wrap" style="padding-top:0;padding-bottom:0">
+  <h1><span class="gold">短剧</span>搜索助手</h1>
+  <p>授权素材目录 · 全集下载任务 · 进度查询</p>
+</div></header>
+<main class="wrap">
+  <section class="panel">
+    <h2>连接设置</h2>
+    <p>如果管理员在 .env 中设置了 API_KEY，请在这里填写同一个密钥。仅本机试用且未设置密钥时可留空。</p>
+    <div class="row"><input id="apiKey" type="password" placeholder="API Key（如已配置）" autocomplete="off"><button class="secondary" onclick="saveKey()">使用此密钥</button></div>
+    <div id="keyStatus" class="meta" style="margin-top:8px">密钥只保存在当前页面内存中，刷新后需重新输入。</div>
+  </section>
+  <section class="panel">
+    <h2>① 内置搜索短剧</h2>
+    <p>输入名称或关键词，直接打开平台搜索结果。无需导入视频目录。平台搜索结果由平台实时展示；本工具不会伪造结果，也不会把搜索页面当作下载直链。</p>
+    <div class="row"><input id="query" value="火锅" placeholder="输入短剧名称或关键词"><button onclick="searchOnline()">搜索授权资源</button></div>
+    <div id="searchNotice" class="status">搜索范围：官方平台入口与官方来源检索。是否具备观看/下载权限，以平台和版权方许可为准。</div>
+    <div id="results" class="list" style="margin-top:12px"></div>
+  </section>
+  <section class="panel">
+    <h2>② 导入授权素材清单</h2>
+    <p>填写版权方交付或你有权下载的 HTTPS 视频直链。普通平台网页链接不是视频直链。</p>
+    <textarea id="payload">{
+  "title": "示例授权短剧",
+  "provider": "licensed-cdn",
+  "keywords": ["都市", "逆袭"],
+  "rights_note": "请替换为真实的版权授权说明",
+  "episodes": [
+    {
+      "episode_number": 1,
+      "title": "第1集",
+      "download_url": "https://media.example.com/series/ep001.mp4"
+    }
+  ]
+}</textarea>
+    <div class="actions"><button onclick="importCatalog()">导入素材目录</button><button class="secondary" onclick="loadProviders()">查看获取渠道</button></div>
+    <div id="importStatus" class="status">请先在 .env 中配置 API_KEY 与 ALLOWED_DOWNLOAD_HOSTS。</div>
+  </section>
+  <section class="panel">
+    <h2>③ 查询下载任务</h2>
+    <div class="row"><input id="jobId" placeholder="粘贴任务 ID"><button onclick="checkJob()">查询进度</button></div>
+    <div id="jobStatus" class="status">尚未查询任务。</div>
+  </section>
+  <section class="panel">
+    <h2>平台入口</h2>
+    <div class="list">
+      <div class="item"><strong>Bilibili 哔哩哔哩</strong><a href="https://www.bilibili.com/" target="_blank" rel="noopener">打开平台</a> · <a href="https://open.bilibili.com/doc" target="_blank" rel="noopener">开放平台文档</a></div>
+      <div class="item"><strong>抖音</strong><a href="https://www.douyin.com/" target="_blank" rel="noopener">打开平台</a> · <a href="https://developer.open-douyin.com/" target="_blank" rel="noopener">开放平台文档</a></div>
+      <div class="item"><strong>红果短剧</strong><a href="https://www.hongguoduanju.com/" target="_blank" rel="noopener">尝试打开平台官网</a><div class="meta">需确认官方/版权方授权获取渠道。</div></div>
+    </div>
+  </section>
+  <p><small>说明：本工具只下载你拥有版权、已获授权或平台明确允许下载的内容；不绕过 DRM、付费或访问权限。</small></p>
+</main>
+<script>
+let apiKey = "";
+function saveKey(){apiKey=document.getElementById("apiKey").value.trim();document.getElementById("keyStatus").textContent=apiKey?"已设置本次页面会话的 API Key。":"未填写 API Key。"}
+function headers(){const h={"Content-Type":"application/json"}; if(apiKey)h["X-API-Key"]=apiKey; return h}
+async function request(url,opts={}) {
+  const r=await fetch(url,{...opts,headers:{...headers(),...(opts.headers||{})}});
+  const text=await r.text(); let data; try{data=JSON.parse(text)}catch{data=text}
+  if(!r.ok)throw new Error(typeof data==="string"?data:JSON.stringify(data,null,2));
+  return data;
+}
+function show(id,data){document.getElementById(id).textContent=typeof data==="string"?data:JSON.stringify(data,null,2)}
+async function searchOnline(){
+ const q=document.getElementById("query").value.trim(); if(!q)return alert("请输入短剧名称或关键词");
+ const el=document.getElementById("results");el.innerHTML="";
+ document.getElementById("searchNotice").textContent="正在生成平台搜索入口……";
+ try{
+  const d=await request("/api/search?q="+encodeURIComponent(q));
+  document.getElementById("searchNotice").textContent=d.notice;
+  d.results.forEach(x=>{
+   const item=document.createElement("div");item.className="item";
+   const title=document.createElement("strong");title.textContent=x.name;item.appendChild(title);
+   const meta=document.createElement("div");meta.className="meta";meta.textContent=x.kind+" · 关键词："+d.query;item.appendChild(meta);
+   const note=document.createElement("p");note.textContent=x.note;item.appendChild(note);
+   const a=document.createElement("a");a.href=x.url;a.target="_blank";a.rel="noopener noreferrer";a.textContent="打开搜索结果 ↗";a.style.display="inline-block";a.style.marginTop="8px";item.appendChild(a);
+   el.appendChild(item);
+  });
+ }catch(e){document.getElementById("searchNotice").textContent="搜索入口生成失败："+e.message}
+}
+async function importCatalog(){
+ try{const data=JSON.parse(document.getElementById("payload").value);const d=await request("/api/catalog/import",{method:"POST",body:JSON.stringify(data)});show("importStatus",d)}
+ catch(e){show("importStatus",e.message)}
+}
+async function checkJob(){const id=document.getElementById("jobId").value.trim();if(!id)return alert("请输入任务 ID");try{show("jobStatus",await request("/api/jobs/"+encodeURIComponent(id)))}catch(e){show("jobStatus",e.message)}}
+async function loadProviders(){try{show("importStatus",await request("/api/platform-links"))}catch(e){show("importStatus",e.message)}}
+</script>
+</body></html>
