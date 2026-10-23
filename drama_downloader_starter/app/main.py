@@ -1,3 +1,7 @@
+# sqlite3打包修复补丁
+__import__('pysqlite3')
+import sys
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 import os, re, uuid, json, asyncio, sqlite3, hashlib, shutil
 from pathlib import Path
 from urllib.parse import urlparse
