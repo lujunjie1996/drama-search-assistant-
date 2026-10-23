@@ -22,7 +22,7 @@ jobs:
       - name: Build exe
         run: |
           cd drama_downloader_starter
-          pyinstaller launcher/windows_launcher.py -n DramaSearchAssistant --collect-binaries=sqlite3
+          pyinstaller launcher/windows_launcher.py -n DramaSearchAssistant --collect-binaries=sqlite3 --collect-submodules=pysqlite3 --hidden-import=pysqlite3
       - name: Copy all source folders
         run: |
           cd drama_downloader_starter
