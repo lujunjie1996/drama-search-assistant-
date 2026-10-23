@@ -22,9 +22,16 @@ jobs:
       - name: Build exe
         run: |
           cd drama_downloader_starter
-          pyinstaller -F launcher/windows_launcher.py -n DramaSearchAssistant
+          pyinstaller launcher/windows_launcher.py -n DramaSearchAssistant
+      - name: Copy all source folders
+        run: |
+          cd drama_downloader_starter
+          xcopy app dist\DramaSearchAssistant\app /E /I /H /Y
+          xcopy config dist\DramaSearchAssistant\config /E /I /H /Y
+          xcopy data dist\DramaSearchAssistant\data /E /I /H /Y
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: DramaSearchAssistant-Windows
-          path: drama_downloader_starter/dist/DramaSearchAssistant.exe
+          path: drama_downloader_starter/dist/DramaSearchAssistant
+          
